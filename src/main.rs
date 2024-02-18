@@ -35,7 +35,7 @@ export component MainConsole inherits Window {
             RoundBorder {
                 width: root.width - parent.padding * 2;
                 height: 30px;
-                LineEdit {
+                line_edit := LineEdit {
                     width: parent.width;
                     height: parent.height;
                     placeholder-text: "Input here..";
@@ -43,9 +43,11 @@ export component MainConsole inherits Window {
                         root.content += s + "\n";
                         self.text = "";
                     }
+                    
                 }
-            }
-        }
+            }            
+        }    
+        forward-focus: line_edit;    
     }
 }
 
