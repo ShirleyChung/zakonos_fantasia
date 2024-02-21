@@ -1,0 +1,91 @@
+    import { VerticalBox, LineEdit, ScrollView, HorizontalBox } from "std-widgets.slint";
+    import { RoundBorder } from "common_base.slint";
+    // 狀態列資料
+    struct Status {
+        date-time: string,        
+        health-power: int,
+        health: string,
+    }
+    // 狀態列區塊
+    component StatusBar inherits Rectangle {
+        background: lightblue;
+        in property <Status> status;
+        HorizontalBox {
+            padding: 2px;
+            Text {
+                text: status.date-time;
+                color: yellow;
+                font-size: 9px;
+            }
+            Text {
+                text: status.health-power;
+                font-size: 9px;
+            }
+            Text {
+                text: status.health;
+                color: status.health-power < 20? red: status.health-power < 50? yellow: white;
+                font-size: 9px;
+            }
+        }
+    }
+    // 主視窗
+    export component MainConsole inherits Window {
+        in property <int> width_: 400;
+        in property <int> height_: 300;
+        width: width_ * 1px;
+        height: max(200, height_) * 1px;
+        // 視窗內文字
+        in-out property <string> content;
+        // 狀態列初始化文字
+        in property <Status> status: {
+            date-time: "12:00:01",
+            health-power: 100,
+            health: "Normal",
+         };
+        // 背景預設白色
+        background: white;
+        // 排列方式: 狀態, 文字, 文字輸入
+        VerticalBox {
+            // 狀態列
+            StatusBar {
+                status: status;
+            }
+            // 訊息文字
+            RoundBorder {
+                width: parent.width - parent.padding * 2;
+                clip: true;
+                ScrollView {
+                    width: parent.width;
+                    height: parent.height;
+                    VerticalBox {
+                        //alignment: top;
+                        Text {
+                            text: content;
+                            color: black;
+                            wrap: word-wrap;
+                            font-size: 16px;
+                        }
+                    }
+                }
+            }            
+            // 間隔 
+            spacing: 5px;
+            // 文字輸入
+            RoundBorder {
+                width: root.width - parent.padding * 2;
+                height: 30px;
+                line_edit := LineEdit {
+                    width: parent.width;
+                    height: parent.height;
+                    placeholder-text: "Input here..";
+                    accepted(s) => {
+                        root.content += s + "\n";
+                        self.text = "";
+                    }
+                    
+                }
+            }            
+        }    
+        // 視窗建立時焦點放在文字輸入
+        forward-focus: line_edit;    
+    }
