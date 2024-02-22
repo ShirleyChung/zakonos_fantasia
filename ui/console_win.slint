@@ -44,11 +44,34 @@
          };
         // 背景預設白色
         background: white;
+        // 彈出式視窗
+        popup := PopupWindow {
+            x: 20px; y: 20px; height: 50px; width: 150px;
+            in property <string> message: "-=message=-";
+            RoundBorder { 
+                height:100%; 
+                width: 100%; 
+                background: gray;
+                VerticalBox {
+                    Text {
+                        text: message;
+                    }
+                }
+            }
+        }       
+
         // 排列方式: 狀態, 文字, 文字輸入
         VerticalBox {
             // 狀態列
             StatusBar {
                 status: status;
+                TouchArea {
+                    width: 100%;
+                    height: 100%;
+                    clicked => {
+                        popup.show();
+                    }
+                }
             }
             // 訊息文字
             RoundBorder {
@@ -84,7 +107,7 @@
                     }
                     
                 }
-            }            
+            }     
         }    
         // 視窗建立時焦點放在文字輸入
         forward-focus: line_edit;    
