@@ -2,6 +2,9 @@ use std::{thread, time};
 use chrono::Local;
 slint::include_modules!();
 
+mod world; /*world.rs*/
+use crate::world::*;
+
 /// 以訊息迴圈輸入到Window裡
 fn run_event_loop(ui: slint::Weak<MainConsole>) {
         // 開始一個執行緒:
@@ -14,7 +17,8 @@ fn run_event_loop(ui: slint::Weak<MainConsole>) {
                 let _ = slint::invoke_from_event_loop(move || {
                     let u = ui_copy.unwrap();
                     let mut status = u.get_status();
-                    status.date_time = format!("{}", Local::now().format("%Y/%m/%d/ %H:%M:%S")).into();
+                    let mut world = World {time: Local::now() };
+                    status.date_time = world.get_curr_time().into();
                     u.set_status(status);
                 });
                 // sleep一下再繼續下一個迴圈
