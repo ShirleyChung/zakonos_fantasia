@@ -19,6 +19,8 @@ impl Card {
     }
 }
 
+type Callback = fn();
+
 /* 世界定義 */
 pub struct World {
     /* 世界時間 */
@@ -27,6 +29,7 @@ pub struct World {
     /* 所有卡片 */
     pub cards: Vec<Card>,
     pub player: Avatar,
+    pub on_time: Callback,
 }
 
 /* 世界運作的函式 */
@@ -70,6 +73,7 @@ impl World {
             curr_state: "".to_string(),
             cards: Vec::<Card>::new(),
             player: Avatar {name: "player".to_string()},
+            on_time: ||{},
         };
         world.load();
         world
