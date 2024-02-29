@@ -1,17 +1,52 @@
 use chrono::{DateTime, Local};
-use std::{fs::File, io::{BufRead, BufReader}};
+use std::{collections::HashMap, fmt, fs::File, io::{BufRead, BufReader}};
 
+#[derive(Clone)]
 pub struct Avatar {
     pub name: String,
 }
 
+impl fmt::Display for Avatar {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "Avatar name = {}", self.name)
+    }
+}
+
+/* 人物管理員 */
+#[derive(Clone)]
+pub struct AvatarManager {
+    avatar_set: HashMap<String, Avatar>,
+}
+
+impl AvatarManager {
+    #[allow(dead_code)]
+    pub fn get_avatar(&mut self, id: &'static str) -> &Avatar {
+        self.avatar_set.entry(id.to_string()).or_insert_with(|| Avatar {name: "".to_string()})
+    }
+    pub fn new() -> AvatarManager {
+        AvatarManager {
+            avatar_set: HashMap::<String, Avatar>::new(),
+        }
+    }
+    pub fn add_avatar(&mut self, name: &String) {
+        let key = format!("{}", fastrand::i32(..));
+        self.avatar_set.insert(key.clone(), Avatar{name: name.clone()});
+    }
+}
 /* 卡片定義 */
 #[derive(Clone)]
 pub struct Card {
     pub desc: String,
 }
 
+impl fmt::Display for Card {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "Card desc = {}", self.desc)
+    }
+}
+
 impl Card {
+    #[allow(dead_code)]
     fn new(desc: &str) -> Card {
         Card {
             desc: desc.to_string(),
@@ -19,17 +54,46 @@ impl Card {
     }
 }
 
+/* 卡片管理員 */
+#[derive(Clone)]
+pub struct CardManager {
+    card_set: HashMap<String, Card>,
+}
+
+impl CardManager {
+    #[allow(dead_code)]
+    pub fn get_card(&mut self, id: &'static str) -> &Card {
+        self.card_set.entry(id.to_string()).or_insert_with(|| Card {desc: "".to_string()})
+    }
+    pub fn new() -> CardManager {
+        CardManager {
+            card_set: HashMap::<String, Card>::new(),
+        }
+    }
+    pub fn add_card(&mut self, desc: &String) {
+        let key = format!("{}", fastrand::i32(..));
+        self.card_set.insert(key.clone(), Card{desc: desc.clone()});
+    }
+}
+
 type Callback = fn();
 
 /* 世界定義 */
+#[derive(Clone)]
 pub struct World {
     /* 世界時間 */
     pub time: DateTime<Local>,
     pub curr_state: String,
     /* 所有卡片 */
-    pub cards: Vec<Card>,
-    pub player: Avatar,
+    pub card_mgr: CardManager,
+    pub avatar_mgr: AvatarManager,
     pub on_time: Callback,
+}
+
+impl fmt::Display for World {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "World: {}", self.curr_state)
+    }
 }
 
 /* 世界運作的函式 */
@@ -53,7 +117,7 @@ impl World {
             let mut line = String::new();
             loop { 
                 if let Ok(_) = reader.read_line(&mut line) {
-                    self.cards.push(Card::new(&line));
+                    self.card_mgr.add_card(&line);
                 } else {
                     break;
                 }
@@ -62,7 +126,12 @@ impl World {
 		if let Ok(f) = File::open("avatar.dat") {
             println!("loading avatar..");
 			let mut reader = BufReader::new(f);
-            let _ = reader.read_line(&mut self.player.name);
+            let mut line = String::new();
+            if let Ok(_) = reader.read_line(&mut line) {
+                self.avatar_mgr.add_avatar(&line);
+            } else {
+                println!("loading avatar fail");                
+            }
         }
     }
     /* 世界，初始化 */
@@ -71,8 +140,8 @@ impl World {
         let mut world = World {
             time: Local::now(), 
             curr_state: "".to_string(),
-            cards: Vec::<Card>::new(),
-            player: Avatar {name: "player".to_string()},
+            card_mgr: CardManager::new(),
+            avatar_mgr: AvatarManager::new(),
             on_time: ||{},
         };
         world.load();

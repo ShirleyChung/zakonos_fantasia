@@ -9,6 +9,7 @@ build = "src/build.rs"
 [dependencies]
 slint = "*"
 chrono = "*"
+fastrand = "*"
 
 [build-dependencies]
 slint-build = "*"

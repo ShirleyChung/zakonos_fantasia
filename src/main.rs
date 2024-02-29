@@ -29,6 +29,9 @@ fn run_event_loop(ui: slint::Weak<MainConsole>) {
 }
 
 fn main() {
+    let w = World::new();
+    let c = w.clone();
+    println!("{}, {}", w, c);
     if let Ok(ui) = MainConsole::new() {
         run_event_loop(ui.as_weak());
         let _ = ui.run();
