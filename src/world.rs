@@ -1,92 +1,11 @@
 use chrono::{DateTime, Local};
-use std::{collections::HashMap, fmt, fs::File, io::{BufRead, BufReader}};
+use std::{fmt, fs::File, io::{BufRead, BufReader}};
 
-#[derive(Clone)]
-pub struct Avatar {
-    pub name: String,
-    pub hold_cards: Vec<String>,
-}
+mod avatar;
+use crate::world::avatar::*;
 
-impl Avatar {
-    pub fn new(name: String) -> Avatar {
-        Avatar {
-            name: name,
-            hold_cards: Vec::<String>::new(),
-        }
-    }
-}
-
-impl fmt::Display for Avatar {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "Avatar name = {}", self.name)
-    }
-}
-
-/* 人物管理員 */
-#[derive(Clone)]
-pub struct AvatarManager {
-    avatar_set: HashMap<String, Avatar>,
-}
-
-impl AvatarManager {
-    #[allow(dead_code)]
-    pub fn get_avatar(&mut self, id: &'static str) -> &Avatar {
-        self.avatar_set.entry(id.to_string()).or_insert_with(|| Avatar::new(id.to_string()))
-    }
-    pub fn new() -> AvatarManager {
-        AvatarManager {
-            avatar_set: HashMap::<String, Avatar>::new(),
-        }
-    }
-    pub fn add_avatar(&mut self, id: &String) {
-        let key = format!("{}", fastrand::i32(..));
-        self.avatar_set.insert(key.clone(), Avatar::new(id.clone()));
-    }
-}
-/* 卡片定義 */
-#[derive(Clone)]
-pub struct Card {
-    pub desc: String,
-    pub power: i32,
-}
-
-impl fmt::Display for Card {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "Card desc = {}", self.desc)
-    }
-}
-
-impl Card {
-    #[allow(dead_code)]
-    fn new(desc: String) -> Card {
-        Card {
-            desc: desc,
-            power: 0,
-        }
-    }
-}
-
-/* 卡片管理員 */
-#[derive(Clone)]
-pub struct CardManager {
-    card_set: HashMap<String, Card>,
-}
-
-impl CardManager {
-    #[allow(dead_code)]
-    pub fn get_card(&mut self, id: &'static str) -> &Card {
-        self.card_set.entry(id.to_string()).or_insert_with(|| Card::new(id.to_string()) )
-    }
-    pub fn new() -> CardManager {
-        CardManager {
-            card_set: HashMap::<String, Card>::new(),
-        }
-    }
-    pub fn add_card(&mut self, desc: &String) {
-        let key = format!("{}", fastrand::i32(..));
-        self.card_set.insert(key.clone(), Card::new(desc.clone()));
-    }
-}
+mod card;
+use crate::world::card::*;
 
 type Callback = fn();
 
