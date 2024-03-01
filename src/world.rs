@@ -4,6 +4,16 @@ use std::{collections::HashMap, fmt, fs::File, io::{BufRead, BufReader}};
 #[derive(Clone)]
 pub struct Avatar {
     pub name: String,
+    pub hold_cards: Vec<String>,
+}
+
+impl Avatar {
+    pub fn new(name: String) -> Avatar {
+        Avatar {
+            name: name,
+            hold_cards: Vec::<String>::new(),
+        }
+    }
 }
 
 impl fmt::Display for Avatar {
@@ -21,22 +31,23 @@ pub struct AvatarManager {
 impl AvatarManager {
     #[allow(dead_code)]
     pub fn get_avatar(&mut self, id: &'static str) -> &Avatar {
-        self.avatar_set.entry(id.to_string()).or_insert_with(|| Avatar {name: "".to_string()})
+        self.avatar_set.entry(id.to_string()).or_insert_with(|| Avatar::new(id.to_string()))
     }
     pub fn new() -> AvatarManager {
         AvatarManager {
             avatar_set: HashMap::<String, Avatar>::new(),
         }
     }
-    pub fn add_avatar(&mut self, name: &String) {
+    pub fn add_avatar(&mut self, id: &String) {
         let key = format!("{}", fastrand::i32(..));
-        self.avatar_set.insert(key.clone(), Avatar{name: name.clone()});
+        self.avatar_set.insert(key.clone(), Avatar::new(id.clone()));
     }
 }
 /* 卡片定義 */
 #[derive(Clone)]
 pub struct Card {
     pub desc: String,
+    pub power: i32,
 }
 
 impl fmt::Display for Card {
@@ -47,9 +58,10 @@ impl fmt::Display for Card {
 
 impl Card {
     #[allow(dead_code)]
-    fn new(desc: &str) -> Card {
+    fn new(desc: String) -> Card {
         Card {
-            desc: desc.to_string(),
+            desc: desc,
+            power: 0,
         }
     }
 }
@@ -63,7 +75,7 @@ pub struct CardManager {
 impl CardManager {
     #[allow(dead_code)]
     pub fn get_card(&mut self, id: &'static str) -> &Card {
-        self.card_set.entry(id.to_string()).or_insert_with(|| Card {desc: "".to_string()})
+        self.card_set.entry(id.to_string()).or_insert_with(|| Card::new(id.to_string()) )
     }
     pub fn new() -> CardManager {
         CardManager {
@@ -72,7 +84,7 @@ impl CardManager {
     }
     pub fn add_card(&mut self, desc: &String) {
         let key = format!("{}", fastrand::i32(..));
-        self.card_set.insert(key.clone(), Card{desc: desc.clone()});
+        self.card_set.insert(key.clone(), Card::new(desc.clone()));
     }
 }
 
