@@ -77,10 +77,10 @@
             RoundBorder {
                 width: parent.width - parent.padding * 2;
                 clip: true;
-                ScrollView {
+                con_scroll := ScrollView {
                     width: parent.width;
                     height: parent.height;
-                    VerticalBox {
+                    console := VerticalBox {
                         //alignment: top;
                         Text {
                             text: content;
@@ -103,6 +103,9 @@
                     placeholder-text: "Input here..";
                     accepted(s) => {
                         root.content += s + "\n";
+                        if con-scroll.height < console.height {
+                            con-scroll.viewport-y = con-scroll.height - console.height;
+                        }
                         self.text = "";
                     }
                     
