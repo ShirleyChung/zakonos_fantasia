@@ -2,6 +2,8 @@ use std::{thread, time};
 slint::include_modules!();
 
 mod world;
+use slint::SharedString;
+
 use crate::world::*;
 
 /// 以訊息迴圈輸入到Window裡
@@ -28,8 +30,11 @@ fn run_event_loop(ui: slint::Weak<MainConsole>) {
         });
 }
 
-fn process_command<T :std::fmt::Display>(cmd: T) -> bool {
+fn process_command(cmd: SharedString) -> bool {
     println!("command: {}", cmd);
+    if cmd == "exit" {
+        return false;
+    }
     return true;
 }
 
