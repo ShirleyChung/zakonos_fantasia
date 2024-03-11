@@ -28,12 +28,18 @@ fn run_event_loop(ui: slint::Weak<MainConsole>) {
         });
 }
 
+fn process_command<T :std::fmt::Display>(cmd: T) -> bool {
+    println!("command: {}", cmd);
+    return true;
+}
+
 fn main() {
     let w = World::new();
     let c = w.clone();
     println!("{}, {}", w, c);
     if let Ok(ui) = MainConsole::new() {
         run_event_loop(ui.as_weak());
+        ui.on_command(process_command);
         let _ = ui.run();
     }
 }
