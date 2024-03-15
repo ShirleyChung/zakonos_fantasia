@@ -15,7 +15,7 @@ fn run_event_loop(ui: slint::Weak<MainConsole>) {
                 // 複製一份弱參考，因所有權會被帶到invoke裡
                 let ui_copy = ui.clone();
                 let cur_time = world.get_curr_time();
-                (world.on_time)();
+                (world.on_time)(&mut world);
                 // 使用slint的invoke_from_event_loop, 來更新UI
                 // 因為有move，所以所有被捕捉的變數所有權都轉移到closure裡
                 let _ = slint::invoke_from_event_loop(move || {
@@ -39,9 +39,6 @@ fn process_command(cmd: SharedString) -> bool {
 }
 
 fn main() {
-    let w = World::new();
-    let c = w.clone();
-    println!("{}, {}", w, c);
     if let Ok(ui) = MainConsole::new() {
         run_event_loop(ui.as_weak());
         ui.on_command(process_command);

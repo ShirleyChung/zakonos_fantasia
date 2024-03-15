@@ -26,7 +26,7 @@ impl Card {
 /* 卡片管理員 */
 #[derive(Clone)]
 pub struct CardManager {
-    card_set: HashMap<String, Card>,
+    pub card_set: HashMap<String, Card>,
 }
 
 impl CardManager {

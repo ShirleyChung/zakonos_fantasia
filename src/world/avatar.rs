@@ -24,7 +24,7 @@ impl fmt::Display for Avatar {
 /* 人物管理員 */
 #[derive(Clone)]
 pub struct AvatarManager {
-    avatar_set: HashMap<String, Avatar>,
+    pub avatar_set: HashMap<String, Avatar>,
 }
 
 impl AvatarManager {
